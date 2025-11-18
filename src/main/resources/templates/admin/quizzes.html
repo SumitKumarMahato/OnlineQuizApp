@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Admin - Quizzes</title></head>
+<body>
+<h2>Quizzes</h2>
+<p><a href="/admin/quizzes/create">Create new quiz</a></p>
+<ul>
+    <li th:each="q : ${quizzes}">
+        <span th:text="${q.title}">Quiz</span>
+        <a th:href="@{/admin/quizzes/delete/{id}(id=${q.id})}">Delete</a>
+    </li>
+</ul>
+</body>
+</html>

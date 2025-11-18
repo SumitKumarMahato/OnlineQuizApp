@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Your Attempts</title></head>
+<body>
+<h2>Your Attempts</h2>
+<table>
+    <tr><th>ID</th><th>Quiz</th><th>Score</th><th>Date</th></tr>
+    <tr th:each="a : ${attempts}">
+        <td th:text="${a.id}">1</td>
+        <td th:text="${a.quiz.title}">Quiz</td>
+        <td th:text="${a.score}">0</td>
+        <td th:text="${a.attemptAt}">date</td>
+    </tr>
+</table>
+</body>
+</html>
