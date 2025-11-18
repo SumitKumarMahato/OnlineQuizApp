@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${quiz.title}">Take Quiz</title>
+    <script>
+        // Very simple client-side flow: iterate through questions array
+        let questions = /*[[${quiz.questions}]]*/ [];
+        let attemptId = /*[[${attemptId}]]*/ 0;
+        let current = 0;
+        function renderQuestion() {
+            if (current>=questions.length) {
+                window.location = '/quiz/result/' + attemptId;
+                return;
+            }
+            const q = questions[current];
+            const container = document.getElementById('q');
+            container.innerHTML = '<p>'+q.text+'</p>';
+            let optsHtml = '';
+            q.options.forEach(o => {
+                optsHtml += '<label><input type="checkbox" value="'+o.id+'"/> '+o.text+'</label><br/>';
+            });
+            container.innerHTML += optsHtml;
+            container.innerHTML += '<button onclick="submitAnswer('+q.id+')">Submit</button>';
+        }
+        function submitAnswer(questionId) {
+            const inputs = document.querySelectorAll('#q input[type=checkbox]:checked');
+            const vals = Array.from(inputs).map(i=>i.value);
+            const params = new URLSearchParams();
+            params.append('attemptId', attemptId);
+            params.append('questionId', questionId);
+            vals.forEach(v=>params.append('selectedOptionIds', v));
+            fetch('/api/attempt/answer', {method:'POST', body: params})
+                .then(r=>r.json()).then(data=>{
+                    alert(data.correct ? 'Correct' : 'Incorrect');
+                    current++;
+                    renderQuestion();
+                });
+        }
+        document.addEventListener('DOMContentLoaded', function(){
+            // Thymeleaf will output JSON for questions and attemptId
+            // This is a placeholder; in a full app ensure proper JSON serialization
+            renderQuestion();
+        });
+    </script>
+</head>
+<body>
+<h2 th:text="${quiz.title}">Quiz</h2>
+<div id="q">Loading...</div>
+</body>
+</html>
